@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="n_likes">
+        <item quantity="zero">@string/likes</item>
+        <item quantity="one">@string/like</item>
+        <item quantity="two">@string/likes</item>
+        <item quantity="few">@string/likes</item>
+        <item quantity="other">@string/likes</item>
+        <item quantity="many">@string/likes</item>
+    </plurals>
+</resources>

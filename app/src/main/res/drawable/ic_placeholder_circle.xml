@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="oval">
+            <gradient
+                android:angle="45"
+                android:centerColor="@color/grey_6"
+                android:endColor="@color/grey_7"
+                android:startColor="@color/grey_5"
+                android:type="linear" />
+        </shape>
+    </item>
+    <item android:drawable="@drawable/ic_person_white_24dp" />
+</layer-list>

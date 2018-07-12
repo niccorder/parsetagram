@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".post.CreatePostFragment">
+
+  <TextView
+      android:id="@+id/create_post_title_tv"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="8dp"
+      android:text="Create a post"
+      android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+      android:textColor="@color/black"
+      android:textStyle="bold"
+      app:layout_constraintBottom_toTopOf="@+id/guideline"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+  <TextView
+      android:id="@+id/create_post_subtitle_tv"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="8dp"
+      android:layout_marginEnd="8dp"
+      android:layout_marginStart="8dp"
+      android:layout_marginTop="8dp"
+      android:text="We need your permission to access the camera."
+      app:layout_constraintBottom_toTopOf="@+id/guideline"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/create_post_title_tv"
+      app:layout_constraintVertical_bias="0.0" />
+
+  <Button
+      android:id="@+id/from_camera_btn"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="8dp"
+      android:layout_marginEnd="32dp"
+      android:layout_marginStart="32dp"
+      android:background="@drawable/bg_gradient_button_rounded"
+      android:text="Grant permission"
+      android:textAllCaps="false"
+      android:textColor="@color/white"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="@+id/guideline"
+      app:layout_constraintVertical_bias="0.0" />
+
+  <android.support.constraint.Guideline
+      android:id="@+id/guideline"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      app:layout_constraintGuide_percent="0.5" />
+
+  <android.support.constraint.Group
+      android:id="@+id/first_step_group"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      app:constraint_referenced_ids="create_post_title_tv,create_post_subtitle_tv,from_camera_btn" />
+
+  <com.google.android.cameraview.CameraView
+      android:id="@+id/camera_view"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:adjustViewBounds="true"
+      app:aspectRatio="9:16"
+      app:autoFocus="true"
+      app:facing="back"
+      app:flash="auto"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintDimensionRatio=""
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0.0"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintVertical_bias="0.0"
+      tools:background="@color/black" />
+
+  <Button
+      android:id="@+id/take_picture_btn"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="32dp"
+      android:layout_marginEnd="32dp"
+      android:layout_marginStart="32dp"
+      android:layout_marginTop="8dp"
+      android:background="@drawable/bg_gradient_button_rounded"
+      android:text="@string/take_picture"
+      android:textAllCaps="false"
+      android:textColor="@color/white"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="1.0"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintVertical_bias="1.0" />
+
+  <android.support.constraint.Group
+      android:id="@+id/camera_take_group"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:visibility="gone"
+      app:constraint_referenced_ids="camera_view,take_picture_btn" />
+
+  <ImageView
+      android:id="@+id/selected_picture_iv"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintVertical_bias="0.0"
+      tools:background="@color/black"
+      tools:layout_height="200dp" />
+
+  <EditText
+      android:id="@+id/caption_et"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="32dp"
+      android:layout_marginStart="32dp"
+      android:layout_marginTop="16dp"
+      android:ems="10"
+      android:hint="Enter a caption!"
+      android:inputType="text"
+      android:singleLine="true"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/selected_picture_iv" />
+
+  <Button
+      android:id="@+id/submit_btn"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="32dp"
+      android:layout_marginEnd="32dp"
+      android:layout_marginStart="32dp"
+      android:layout_marginTop="8dp"
+      android:background="@drawable/bg_gradient_button_rounded"
+      android:text="@string/submit"
+      android:textAllCaps="false"
+      android:textColor="@color/white"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/selected_picture_iv"
+      app:layout_constraintVertical_bias="1.0" />
+
+  <android.support.constraint.Group
+      android:id="@+id/enter_caption_group"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:visibility="gone"
+      app:constraint_referenced_ids="selected_picture_iv,caption_et,submit_btn" />
+
+</android.support.constraint.ConstraintLayout>

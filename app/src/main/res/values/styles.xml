@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <!-- Prevents crash on certain devices to namespace conflict -->
+  <style name="FrameworkRoot.Theme" parent="Theme.AppCompat.Light.NoActionBar" />
+
+  <style name="Theme.Instagram" parent="FrameworkRoot.Theme">
+    <item name="colorPrimary">@color/iglive_ssi_banner_gradient_end</item>
+    <item name="colorPrimaryDark">@color/white</item>
+    <item name="colorAccent">@color/ig_purple</item>
+  </style>
+
+</resources>

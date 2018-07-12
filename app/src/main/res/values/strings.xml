@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">FBU Instagram</string>
+    <string name="welcome_title">Welcome to Instagram</string>
+    <string name="password_hint">Password</string>
+    <string name="sign_up">Sign up</string>
+
+    <string name="like">like</string>
+    <string name="likes">likes</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="log_in">Log in</string>
+    <string name="or_sign_up">or sign up</string>
+    <string name="next">Next</string>
+    <string name="log_out">Log out</string>
+    <string name="take_picture">Take Picture</string>
+    <string name="submit">Submit</string>
+</resources>
