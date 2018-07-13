@@ -13,6 +13,7 @@ import android.support.v4.widget.PopupMenuCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -44,7 +45,7 @@ import me.niccorder.instagram.model.ImagePost;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ProfileFragment extends BaseFragment {
+public class ProfileFragment extends BaseFragment implements ProfilePostAdapter.Callback {
 
   private static final String TAG = ProfileFragment.class.getSimpleName();
   private static final String KEY_USER = "key_user";
@@ -62,10 +63,7 @@ public class ProfileFragment extends BaseFragment {
     return profileFragment;
   }
 
-  @BindView(R.id.username_tv) TextView username;
-  @BindView(R.id.avatar_iv) ImageView avatar;
   @BindView(R.id.profile_recycler) RecyclerView profileRecycler;
-  @BindView(R.id.menu_iv) ImageView menuButton;
 
   private ParseUser user;
   private Callback callback;
@@ -81,23 +79,6 @@ public class ProfileFragment extends BaseFragment {
     } else {
       user = savedInstanceState.getParcelable(KEY_USER);
     }
-
-    ParseUser.getQuery()
-            .whereEqualTo("objectId", user.getObjectId())
-            .findInBackground(new FindCallback<ParseUser>() {
-              @Override
-              public void done(List<ParseUser> objects, ParseException e) {
-                user = objects.get(0);
-
-                final ParseFile avatarFile = user.getParseFile("avatar");
-                if (avatarFile != null) {
-                  Glide.with(ProfileFragment.this)
-                          .load(avatarFile.getUrl())
-                          .apply(RequestOptions.circleCropTransform())
-                          .into(avatar);
-                }
-              }
-            });
   }
 
   @Override
@@ -123,10 +104,6 @@ public class ProfileFragment extends BaseFragment {
   @Override
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
-
-    username.setText(user.getUsername());
-    initProfilePhoto();
-    initMenuButton();
     initRecycler();
 
     ImagePost.query().createdBy(user).findInBackground(new FindCallback<ImagePost>() {
@@ -141,55 +118,21 @@ public class ProfileFragment extends BaseFragment {
     });
   }
 
-  private void initProfilePhoto() {
-    ParseFile file = user.getParseFile("avatar");
-    if (file != null) {
-      Log.d(TAG, "Loading profile photo.");
-
-      Glide.with(this)
-              .load(user.getParseFile("avatar").getUrl())
-              .apply(RequestOptions.circleCropTransform())
-              .into(avatar);
-    }
-    if (isCurrentUser()) {
-      avatar.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-          onSelectAvatar();
-        }
-      });
-    }
-  }
-
-  private void initMenuButton() {
-    final PopupMenu popupMenu = new PopupMenu(getContext(), menuButton);
-    popupMenu.inflate(R.menu.profile);
-    popupMenu.setGravity(Gravity.START | Gravity.BOTTOM);
-    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-      @Override
-      public boolean onMenuItemClick(MenuItem item) {
-        switch (item.getItemId()) {
-          case R.id.action_logout:
-            callback.onLogoutClick();
-            return true;
-          default:
-            return false;
-        }
-      }
-    });
-
-    menuButton.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        popupMenu.show();
-      }
-    });
-    menuButton.setVisibility(isCurrentUser() ? View.VISIBLE : View.GONE);
-  }
-
   private void initRecycler() {
-    adapter = new ProfilePostAdapter();
-    profileRecycler.setLayoutManager(new GridLayoutManager(getContext(), 3));
+    adapter = new ProfilePostAdapter(this);
+
+    final int gridSpanCount = 3;
+    final GridLayoutManager layoutManager = new GridLayoutManager(getContext(), gridSpanCount);
+    layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+      @Override
+      public int getSpanSize(int position) {
+        if (position == 0)
+          return gridSpanCount;
+        return 1;
+      }
+    });
+
+    profileRecycler.setLayoutManager(layoutManager);
     profileRecycler.addItemDecoration(
             new MarginItemDecoration(
                     getResources().getDimensionPixelSize(R.dimen.item_post_margin_h),
@@ -200,8 +143,14 @@ public class ProfileFragment extends BaseFragment {
     profileRecycler.setAdapter(adapter);
   }
 
-  private void onSelectAvatar() {
-    Log.d(TAG, "onSelectAvatar()");
+  @Override
+  public void onAvatarClicked() {
+
+  }
+
+  @Override
+  public void onChangeAvatarClicked() {
+    Log.d(TAG, "onChangeAvatarClicked()");
 
     Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
     galleryIntent.setType("image/*");
@@ -211,7 +160,8 @@ public class ProfileFragment extends BaseFragment {
     startActivity(chooser);
   }
 
-  private boolean isCurrentUser() {
-    return ParseUser.getCurrentUser().getObjectId().equals(user.getObjectId());
+  @Override
+  public void onLogoutClicked() {
+    callback.onLogoutClick();
   }
 }

@@ -10,5 +10,10 @@
                 android:type="linear" />
         </shape>
     </item>
-    <item android:drawable="@drawable/ic_person_white_24dp" />
+    <item
+        android:bottom="2dp"
+        android:drawable="@drawable/ic_person_white_24dp"
+        android:left="2dp"
+        android:right="2dp"
+        android:top="2dp" />
 </layer-list>
