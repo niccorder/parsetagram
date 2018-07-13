@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.recyclerview.extensions.AsyncDifferConfig;
 import android.support.v7.recyclerview.extensions.ListAdapter;
 import android.support.v7.util.DiffUtil;
@@ -85,11 +86,16 @@ public class FeedAdapter extends ListAdapter<ImagePost, FeedAdapter.ItemHolder> 
     holder.likeButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        callback.onLikeClicked(
-                getItem(holder.getAdapterPosition()),
-                !holder.likeButton.isActivated()
+        final boolean likedFlag = !holder.likeButton.isActivated();
+        final ImagePost post = getItem(holder.getAdapterPosition());
+        callback.onLikeClicked(post, likedFlag);
+
+        final String likeCountText = formatLikes(
+                holder.itemView.getContext(),
+                post.getCachedLikeCount() + 1
         );
-        holder.likeButton.setActivated(!holder.likeButton.isActivated());
+        holder.likeCount.setText(likeCountText);
+        holder.likeButton.setActivated(likedFlag);
       }
     });
     holder.messageButton.setOnClickListener(new View.OnClickListener() {
@@ -121,12 +127,47 @@ public class FeedAdapter extends ListAdapter<ImagePost, FeedAdapter.ItemHolder> 
     setDescription(holder.description, username, post.getDescription());
 
     final int requestStartPosition = position;
+    holder.likeButton.setEnabled(false);
+    post.hasLiked(ParseUser.getCurrentUser(), new CountCallback() {
+      @Override
+      public void done(int count, ParseException e) {
+        handleHasLikedCompleted(requestStartPosition, holder, count != 0, e);
+      }
+    });
+
     post.likeCount(new CountCallback() {
       @Override
       public void done(int count, ParseException e) {
         handleLikeCountCompleted(requestStartPosition, holder, count, e);
       }
     });
+  }
+
+  @Override
+  public void onViewRecycled(@NonNull ItemHolder holder) {
+    super.onViewRecycled(holder);
+
+    holder.likeButton.setActivated(false);
+    holder.likeCount.setText(formatLikes(holder.itemView.getContext(), 0));
+  }
+
+  private void handleHasLikedCompleted(
+          final int requestStartPosition,
+          @NonNull final ItemHolder holder,
+          final boolean hasLiked,
+          @Nullable final ParseException e
+  ) {
+    if (e != null) {
+      e.printStackTrace();
+      return;
+    } else if (requestStartPosition != holder.getAdapterPosition()) {
+      Log.d(TAG, "Skipping hasLiked for holder @ " + Integer.toString(requestStartPosition));
+      return;
+    }
+
+    Log.d(TAG, "updating hasLiked for holder @ " + Integer.toString(requestStartPosition));
+    holder.likeButton.setEnabled(true);
+    holder.likeButton.setActivated(hasLiked);
   }
 
   private boolean shouldUpdateHolder(int startPosition, int endPosition) {

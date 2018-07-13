@@ -15,6 +15,8 @@ import android.view.ViewGroup;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
+
 import java.util.ArrayList;
 import java.util.List;
 import me.niccorder.instagram.R;
@@ -139,6 +141,13 @@ public class FeedFragment extends Fragment implements Refreshable, FeedAdapter.C
   @Override
   public void onLikeClicked(ImagePost post, boolean liked) {
     Log.d(TAG, "onLikeClicked(liked = " + Boolean.toString(liked) + ", id = " + post.getObjectId() + ")");
+
+    final ParseUser user = ParseUser.getCurrentUser();
+    if (liked) {
+      post.likePost(user);
+    } else {
+      post.unlikePost(user);
+    }
   }
 
   @Override

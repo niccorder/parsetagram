@@ -13,6 +13,7 @@ import com.parse.SaveCallback;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @ParseClassName("ImagePost")
 public class ImagePost extends ParseObject {
@@ -21,6 +22,8 @@ public class ImagePost extends ParseObject {
   private static final String KEY_LIKED_BY = "liked_by";
   private static final String KEY_IMAGE = "image";
   private static final String KEY_USER = "user";
+
+  private final AtomicInteger cachedLikeCount = new AtomicInteger(0);
 
   public void setTitle(String title) {
     put(KEY_TITLE, title);
@@ -64,19 +67,35 @@ public class ImagePost extends ParseObject {
 
   private final ParseQuery<ParseObject> likeCountQuery = getRelation(KEY_LIKED_BY).getQuery();
   public void likeCount(final CountCallback callback) {
+    // pass back our cached like count immediately.
+    callback.done(cachedLikeCount.get(), null);
+
     likeCountQuery
             .setCachePolicy(ParseQuery.CachePolicy.CACHE_THEN_NETWORK)
-            .countInBackground(callback);
+            .countInBackground(new CountCallback() {
+              @Override
+              public void done(int count, ParseException e) {
+                if (e == null) {
+                  cachedLikeCount.set(count);
+                }
+
+                callback.done(count, e);
+              }
+            });
   }
 
-  public void likePost(ParseUser user, SaveCallback callback) {
+  public int getCachedLikeCount() {
+    return cachedLikeCount.get();
+  }
+
+  public void likePost(ParseUser user) {
     getRelation(KEY_LIKED_BY).add(user);
-    saveInBackground(callback);
+    saveInBackground();
   }
 
-  public void unlikePost(ParseUser user, SaveCallback callback) {
+  public void unlikePost(ParseUser user) {
     getRelation(KEY_LIKED_BY).remove(user);
-    saveInBackground(callback);
+    saveInBackground();
   }
 
   public void hasLiked(ParseUser user, CountCallback callback) {
